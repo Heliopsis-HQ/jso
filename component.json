@@ -1,0 +1,10 @@
+{
+  "name": "jso",
+  "version": "1.0.0",
+  "main": "jso.js",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components"
+  ]
+}
