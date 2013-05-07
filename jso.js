@@ -549,7 +549,7 @@
 				if (!settings.headers) settings.headers = {};
 				settings.headers["Authorization"] = "Bearer " + token["access_token"];
 			}
-			$.ajax(settings);
+			return $.ajax(settings);
 		};
 
 		settings.error = function(jqXHR, textStatus, errorThrown) {
@@ -573,19 +573,27 @@
 
 		if (!token) {
 			if (allowia) {
+				var deferred = $.Deferred;
 				log("Perform authrequest");
 				jso_authrequest(providerid, scopes, function() {
 					token = api_storage.getToken(providerid, scopes);
-					performAjax();
+					performAjax().then(
+						function(){
+							deferred.resolveWith( null, arguments );
+						},
+						function(){
+							deferred.rejectWith( null, arguments );
+						}
+					);
 				});
-				return;
+				return deferred.promise();
 			} else {
 				throw "Could not perform AJAX call because no valid tokens was found.";	
 			}
 		}
 
 
-		performAjax();
+		return performAjax();
 	};
 
 
